@@ -1,0 +1,33 @@
+npm install react-big-calendar
+
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+
+import moment from 'moment';
+const localizer = momentLocalizer(moment);
+
+
+// Realiza una solicitud para obtener los datos de las recetas desde el backend
+// y almacénalos en un estado de tu componente.
+const [recipeData, setRecipeData] = useState([]);
+
+
+
+import moment from 'moment';
+
+// Formatea las fechas de vencimiento en el formato adecuado
+const formattedEvents = recipeData.map((recipe) => ({
+  start: moment(recipe.fecha_vencimiento).toDate(),
+  end: moment(recipe.fecha_vencimiento).toDate(),
+  title: 'Receta vencida',
+}));
+
+<Calendar
+  localizer={localizer}
+  events={formattedEvents}
+  startAccessor="start"
+  endAccessor="end"
+  titleAccessor="title"
+/>
+
+

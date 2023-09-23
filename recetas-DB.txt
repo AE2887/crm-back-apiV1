@@ -1,0 +1,58 @@
+Diseño de la Base de Datos:mysql -u albert_enrique -pfelipe2887
+
+En tu base de datos MySQL, debes tener dos tablas principales: una para las personas 
+y otra para las recetas.
+La tabla de personas podría incluir campos como id, nombre, correo electrónico, 
+y otros detalles personales.
+
+La tabla de recetas podría incluir campos como id, persona_id 
+(para vincular la receta a una persona específica), 
+fecha_de_vencimiento, y otros detalles relacionados con la receta.
+-------------------------------------------------------------
+Crear una Receta:
+
+Cuando una persona necesita una nueva receta, 
+se crea un registro en la tabla de recetas asociado a esa persona.
+Se calcula la fecha de vencimiento inicial (por ejemplo, 
+30 días a partir de la fecha de creación) y se almacena en la tabla.
+----------------------------------------------
+Renovación Mensual:
+
+Para permitir la renovación mensual, puedes programar una tarea 
+(por ejemplo, utilizando cronjobs en Node.js) 
+que se ejecute una vez al día y verifique todas las recetas vencidas.
+Si una receta está vencida, se actualiza su fecha de vencimiento sumando 30 días a la fecha actual 
+y se guarda en la base de datos.
+------------------------------------------------------------
+Botón de Renovación en el Frontend:
+
+En el frontend, muestra la lista de recetas de cada persona.
+Junto a cada receta, muestra un botón de "Renovar".
+Cuando se presiona el botón "Renovar", 
+se envía una solicitud al servidor para actualizar la fecha de vencimiento de la receta asociada.
+------------------------------------------------------------
+Seguridad:
+
+Implementa medidas de seguridad para asegurarte de que solo las personas autorizadas
+ puedan renovar sus recetas. 
+Esto podría implicar la autenticación de usuarios y la comprobación de permisos.
+Calendario:
+
+Puedes mostrar las fechas de vencimiento de las recetas en un calendario en el frontend 
+para que las personas
+ puedan ver cuándo expirarán sus recetas.
+Gestión de Errores:
+
+Asegúrate de manejar adecuadamente los errores, 
+como el caso en que una receta no pueda renovarse debido a un problema en la base de datos 
+o por falta de permisos.
+Documentación:
+
+Documenta cómo funciona el proceso de renovación de recetas y
+ cómo se asocian con las personas para facilitar el mantenimiento 
+y la comprensión futura.
+Esta lógica asegurará que las recetas estén vinculadas a las personas
+ y puedan renovarse automáticamente cada mes. 
+Ten en cuenta que deberás implementar la lógica de acuerdo 
+con las características específicas de tu aplicación y
+la tecnología que estés utilizando en el frontend y el backend.
