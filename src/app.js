@@ -2,7 +2,7 @@ import express from "express";
 import clientesRoutes from "../src/routes/clientes.routes.js";
 import recetasRoutes from "../src/routes/recetas.routes.js";
 import ping from "../src/routes/ping.routes.js";
-import {PORT} from  './config.js'
+
 
 
 const app = express();

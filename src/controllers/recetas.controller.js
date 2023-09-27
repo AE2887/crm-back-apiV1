@@ -14,6 +14,33 @@ export const getRecetas = async (req, res) => {
   }
 };
 
+// En tu controlador de recetas
+export const getRecipe = async (req, res) => {
+  try {
+    const { dni, afiliado } = req.query;
+
+    // Registra la consulta SQL en la consola
+    const sqlQuery = `
+    SELECT c.nombre, c.apellido, c.dni, c.afiliado, r.fecha_de_vencimiento, r.title
+    FROM clientes AS c
+    JOIN recetas AS r ON c.afiliado = r.afiliado AND c.dni = r.dni
+`;
+
+    
+
+    // Realiza la consulta SQL para obtener las recetas que coincidan con el DNI y el afiliado
+    const [rows] = await pool.query(sqlQuery, [dni, afiliado]);
+
+    res.json(rows);
+    console.log(rows);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something goes wrong",
+    });
+  }
+};
+
+
 export const getReceta = async (req, res) => {
   try {
         // throw new Error('GET:id Error')
@@ -37,13 +64,11 @@ export const getReceta = async (req, res) => {
 
 export const postRecetas = async (req, res) => {
   try {
-        // throw new Error('POST Error')
-
-    const { dni, afiliado, fecha_de_vencimiento } = req.body;
+    const { dni, afiliado, fecha_de_vencimiento, start, title } = req.body;
 
     const [rows] = await pool.query(
-      "INSERT INTO recetas (dni, afiliado, fecha_de_vencimiento) VALUES (?,?,?)",
-      [dni, afiliado, fecha_de_vencimiento]
+      "INSERT INTO recetas (dni, afiliado, fecha_de_vencimiento, start, title) VALUES (?,?,?,?,?)",
+      [dni, afiliado, fecha_de_vencimiento, start, title]
     );
 
     res.send({
@@ -51,8 +76,11 @@ export const postRecetas = async (req, res) => {
       dni,
       afiliado,
       fecha_de_vencimiento,
+      start,
+      title,
     });
   } catch (error) {
+    console.error("Error en la consulta SQL:", error); // Agrega esta línea
     return res.status(500).json({
       message: "Something goes wrong",
     });
@@ -64,11 +92,11 @@ export const patchRecetas = async (req, res) => {
         // throw new Error('PATCH Error')
 
     const { id } = req.params;
-    const {  dni, afiliado, fecha_de_vencimiento } = req.body;
+    const {  dni, afiliado, fecha_de_vencimiento, start, title } = req.body;
 
     const [result] = await pool.query(
-      "UPDATE recetas SET dni = IFNULL(?, dni),afiliado = IFNULL(?, afiliado),fecha_de_vencimiento = IFNULL(?, fecha_de_vencimiento) WHERE id = ?",
-      [dni, afiliado, fecha_de_vencimiento, id]
+      "UPDATE recetas SET dni = IFNULL(?, dni),afiliado = IFNULL(?, afiliado),fecha_de_vencimiento = IFNULL(?, fecha_de_vencimiento),start = IFNULL(?, start),title = IFNULL(?, title) WHERE id = ?",
+      [dni, afiliado, fecha_de_vencimiento,start,title, id]
     );
 
     if (result.affectedRows === 0)
