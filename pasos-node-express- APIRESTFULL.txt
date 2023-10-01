@@ -1,8 +1,0 @@
-Configurar el Backend (Node.js y Express.js):
-
-Crea una API RESTful en Node.js utilizando Express.js para gestionar la lógica del sistema.
-Define rutas para:
-Crear nuevas recetas con fechas de vencimiento.
-Consultar las recetas existentes.
-Renovar una receta cuando se pulsa un botón.
-Actualizar la información del calendario en la base de datos.
