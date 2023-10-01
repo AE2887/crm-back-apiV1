@@ -5,6 +5,7 @@ import {
   getReceta,
   postRecetas,
   patchRecetas,
+  sumar30DiasReceta,
   deleteRecetas,
 } from "../controllers/recetas.controller.js";
 
@@ -34,6 +35,8 @@ router.get("/recetas/:id", getReceta);
 router.post("/recetas", postRecetas);
 
 router.patch("/recetas/:id", patchRecetas);
+
+router.patch("/recetas/sumar30dias/:id", sumar30DiasReceta);
 
 router.delete("/recetas/:id", deleteRecetas);
 
