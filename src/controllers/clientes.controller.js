@@ -35,27 +35,36 @@ export const getCliente = async (req, res) => {
 
 export const postClientes = async (req, res) => {
   try {
-        // throw new Error('POST Error')
-
     const { nombre, apellido, afiliado, dni, direccion, telefono } = req.body;
+
+    // Convierte 'afiliado' y 'dni' a números enteros
+    const afiliadoInt = parseInt(afiliado, 10);
+    const dniInt = parseInt(dni, 10);
+
+    // Verifica si la conversión fue exitosa
+    if (isNaN(afiliadoInt) || isNaN(dniInt)) {
+      return res.status(400).json({
+        message: "Los campos 'afiliado' y 'dni' deben ser números enteros válidos.",
+      });
+    }
 
     const [rows] = await pool.query(
       "INSERT INTO clientes (nombre, apellido, afiliado, dni, direccion, telefono) VALUES (?,?,?,?,?,?)",
-      [nombre, apellido, afiliado, dni, direccion, telefono]
+      [nombre, apellido, afiliadoInt, dniInt, direccion, telefono]
     );
 
     res.send({
       id: rows.insertId,
       nombre,
       apellido,
-      afiliado,
-      dni,
+      afiliado: afiliadoInt, // Usa el valor convertido
+      dni: dniInt, // Usa el valor convertido
       direccion,
       telefono,
     });
   } catch (error) {
     return res.status(500).json({
-      message: "Something goes wrong",
+      message: "Something went wrong",
     });
   }
 };

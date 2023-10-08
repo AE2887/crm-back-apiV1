@@ -13,6 +13,40 @@ export const getRecetas = async (req, res) => {
     });
   }
 };
+export const getRecipesByClient = async (req, res) => {
+  try {
+    const { dni, afiliado } = req.query;
+
+    const sqlQuery = `
+      SELECT c.id, c.nombre, c.apellido, c.dni, c.afiliado, r.fecha_de_vencimiento, r.title
+      FROM clientes AS c
+      JOIN recetas AS r ON c.afiliado = r.afiliado AND c.dni = r.dni
+      WHERE c.dni = ? AND c.afiliado = ?
+    `;
+    
+    const [rows] = await pool.query(sqlQuery, [dni, afiliado]);
+    
+    // Organiza los datos para agrupar las recetas por cliente
+    const clientWithRecipes = {
+      id: rows[0].id,
+      nombre: rows[0].nombre,
+      apellido: rows[0].apellido,
+      dni: rows[0].dni,
+      afiliado: rows[0].afiliado,
+      recetas: rows.map((row) => ({
+        fecha_de_vencimiento: row.fecha_de_vencimiento,
+        title: row.title,
+      })),
+    };
+
+    res.json(clientWithRecipes);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something goes wrong",
+    });
+  }
+};
+
 
 // En tu controlador de recetas
 export const getRecipe = async (req, res) => {
@@ -59,31 +93,33 @@ export const getReceta = async (req, res) => {
   }
 };
 
+
 export const postRecetas = async (req, res) => {
   try {
-    const { dni, afiliado, fecha_de_vencimiento, start, title } = req.body;
+    const { dni, afiliado, fecha_de_vencimiento, title } = req.body;
+
+    // Parsea la fecha en formato ISO
+    const parsedDate = new Date(fecha_de_vencimiento);
 
     const [rows] = await pool.query(
-      "INSERT INTO recetas (dni, afiliado, fecha_de_vencimiento, start, title) VALUES (?,?,?,?,?)",
-      [dni, afiliado, fecha_de_vencimiento, start, title]
+      "INSERT INTO recetas (dni, afiliado, fecha_de_vencimiento, title) VALUES (?, ?, ?, ?)",
+      [dni, afiliado, parsedDate, title]
     );
 
-    res.send({
+    res.status(201).json({
       id: rows.insertId,
       dni,
       afiliado,
-      fecha_de_vencimiento,
-      start,
+      fecha_de_vencimiento: parsedDate, // Envía la fecha parseada
       title,
     });
   } catch (error) {
-    console.error("Error en la consulta SQL:", error); // Agrega esta línea
+    console.error("Error en la consulta SQL:", error);
     return res.status(500).json({
-      message: "Something goes wrong",
+      message: "Algo salió mal",
     });
   }
 };
-
 
 // Controlador para sumar 30 días a la fecha de vencimiento de una receta por su ID
 export const sumar30DiasReceta = async (req, res) => {

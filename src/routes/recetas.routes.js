@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getRecetas,
   getRecipe,
+  getRecipesByClient,
   getReceta,
   postRecetas,
   patchRecetas,
@@ -29,6 +30,8 @@ router.use((req, res, next) => {
 router.get("/recetas", getRecetas);
 
 router.get("/recipe", getRecipe);
+
+router.get("/recipes-by-client", getRecipesByClient);
 
 router.get("/recetas/:id", getReceta);
 
